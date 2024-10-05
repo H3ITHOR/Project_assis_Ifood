@@ -1,0 +1,119 @@
+{
+  "Project": {
+    "Name": "Assistente de Delivery",
+    "Description": "Um assistente de delivery automatizado que utiliza AWS Step Functions e Amazon Bedrock para gerenciar e otimizar o fluxo de pedidos, desde a recepção até a entrega final, proporcionando uma experiência personalizada e eficiente ao cliente.",
+    "Version": "1.0",
+    "Author": "Heitor",
+    "Date": "2024-10-05",
+    "Services": [
+      {
+        "Name": "AWS Step Functions",
+        "Description": "Serviço que permite orquestrar diferentes serviços da AWS para gerenciar o fluxo de trabalho dos pedidos de delivery.",
+        "Purpose": "Coordena tarefas como validação de pedidos, processamento de pagamentos e atualização de status."
+      },
+      {
+        "Name": "Amazon Bedrock",
+        "Description": "Plataforma que fornece acesso a modelos de inteligência artificial, melhorando a personalização e a eficiência do assistente de delivery.",
+        "Purpose": "Utilizado para fornecer recomendações personalizadas aos clientes e otimizar a comunicação."
+      },
+      {
+        "Name": "Amazon API Gateway",
+        "Description": "Gerencia a entrada de pedidos e expõe a API para os clientes interagirem com o sistema.",
+        "Purpose": "Permite a recepção e validação dos pedidos feitos pelos clientes."
+      },
+      {
+        "Name": "AWS Lambda",
+        "Description": "Serviço de computação que executa código em resposta a eventos.",
+        "Purpose": "Realiza operações de validação de pedidos, interações com serviços de pagamento e manipulação de dados."
+      },
+      {
+        "Name": "Amazon DynamoDB",
+        "Description": "Banco de dados NoSQL totalmente gerenciado.",
+        "Purpose": "Armazena dados dos pedidos, incluindo informações sobre clientes, status de pedidos e histórico de transações."
+      },
+      {
+        "Name": "Amazon SNS (Simple Notification Service)",
+        "Description": "Serviço de notificação baseado em nuvem.",
+        "Purpose": "Envia notificações para os clientes sobre o status do pedido em tempo real."
+      },
+      {
+        "Name": "Amazon S3",
+        "Description": "Serviço de armazenamento de objetos.",
+        "Purpose": "Armazena logs e dados de operação para análise posterior."
+      }
+    ],
+    "Workflow": {
+      "Steps": [
+        {
+          "Step": 1,
+          "Name": "Recepção do Pedido",
+          "Description": "O cliente realiza um pedido através da API exposta pelo Amazon API Gateway.",
+          "Output": "Pedido recebido e armazenado no DynamoDB."
+        },
+        {
+          "Step": 2,
+          "Name": "Validação do Pedido",
+          "Description": "O sistema valida o pedido para garantir que todas as informações necessárias estão corretas.",
+          "Output": "Pedido validado ou rejeitado com mensagem de erro."
+        },
+        {
+          "Step": 3,
+          "Name": "Processamento de Pagamento",
+          "Description": "O sistema interage com um serviço de pagamento para processar a transação.",
+          "Output": "Confirmação de pagamento bem-sucedido ou falha."
+        },
+        {
+          "Step": 4,
+          "Name": "Atualização de Status",
+          "Description": "O status do pedido é atualizado no banco de dados DynamoDB.",
+          "Output": "Status atualizado para 'Em Preparação'."
+        },
+        {
+          "Step": 5,
+          "Name": "Notificação ao Cliente",
+          "Description": "O cliente é notificado sobre o status do pedido através do Amazon SNS.",
+          "Output": "Notificação enviada com detalhes do pedido."
+        },
+        {
+          "Step": 6,
+          "Name": "Preparação do Pedido",
+          "Description": "O pedido é preparado e a equipe de entrega é informada.",
+          "Output": "Pedido preparado para entrega."
+        },
+        {
+          "Step": 7,
+          "Name": "Entrega do Pedido",
+          "Description": "O pedido é marcado como entregue após ser recebido pelo cliente.",
+          "Output": "Status do pedido atualizado para 'Entregue'."
+        }
+      ]
+    },
+    "Deployment": {
+      "Environment": "Production",
+      "Resources": {
+        "LambdaFunctions": [
+          {
+            "Name": "ValidateOrder",
+            "Description": "Função Lambda que valida os pedidos recebidos."
+          },
+          {
+            "Name": "ProcessPayment",
+            "Description": "Função Lambda que processa pagamentos."
+          },
+          {
+            "Name": "UpdateOrderStatus",
+            "Description": "Função Lambda que atualiza o status dos pedidos."
+          }
+        ],
+        "APIGateway": {
+          "Endpoint": "https://api.seudominio.com/delivery",
+          "Methods": ["POST", "GET"]
+        }
+      }
+    },
+    "Logging": {
+      "LogLevel": "INFO",
+      "LogDestination": "Amazon S3"
+    }
+  }
+}
